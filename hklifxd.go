@@ -37,6 +37,7 @@ var (
 	lights             map[uint64]*HKLight
 	pin                string
 	transitionDuration time.Duration
+	port               string
 )
 
 func Connect() {
@@ -151,7 +152,7 @@ func GetHKLight(light common.Light) *HKLight {
 	acc.Lightbulb.Saturation.SetValue(saturation)
 	acc.Lightbulb.Hue.SetValue(hue)
 
-	config := hc.Config{Pin: pin}
+	config := hc.Config{Pin: pin, Port: port}
 	transport, err := hc.NewIPTransport(config, acc.Accessory)
 	if err != nil {
 		log.Fatal(err)
@@ -255,10 +256,12 @@ func main() {
 	pinArg := flag.String("pin", "", "PIN used to pair the LIFX bulbs with HomeKit")
 	verboseArg := flag.Bool("v", false, "Whether or not log output is displayed")
 	transitionArg := flag.Float64("transition-duration", 1, "Transition time in seconds")
+	portArg := flag.String("port", "", "Port for mDNS to listen on")
 
 	flag.Parse()
 
 	pin = *pinArg
+	port = *portArg
 
 	if !*verboseArg {
 		log.Info = false
